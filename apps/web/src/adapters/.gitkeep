@@ -1,0 +1,2 @@
+# Web-specific adapters
+# Example: WebFileSystemAdapter.ts - implements IFileSystemAdapter using File System Access API

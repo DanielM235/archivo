@@ -1,0 +1,2 @@
+# Electron-specific adapters
+# Example: ElectronFileSystemAdapter.ts - implements IFileSystemAdapter using IPC

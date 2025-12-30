@@ -162,6 +162,13 @@ coverage*.json
 coverage*.xml
 coverage*.info
 
+# Coverage folders (Vitest/Jest)
+coverage/
+
+# Build output
+dist/
+out/
+
 # Visual Studio code coverage results
 *.coverage
 *.coveragexml
@@ -213,9 +220,10 @@ PublishScripts/
 # NuGet Symbol Packages
 *.snupkg
 # The packages folder can be ignored because of Package Restore
-**/[Pp]ackages/*
+# NOTE: Commented out - conflicts with pnpm monorepo packages/ folder
+# **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
-!**/[Pp]ackages/build/
+# !**/[Pp]ackages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/[Pp]ackages/repositories.config
 # NuGet v3's project.json files produces more ignorable files

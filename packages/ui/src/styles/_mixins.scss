@@ -1,0 +1,230 @@
+// ============================================
+// ARCHIVO - SCSS MIXINS
+// ============================================
+// Reusable style patterns and utilities
+// ============================================
+
+@use 'sass:color';
+@use 'variables' as *;
+
+// ============================================
+// RESPONSIVE BREAKPOINTS
+// ============================================
+
+/// Apply styles for screens larger than the specified breakpoint (mobile-first)
+/// @param {String} $breakpoint - Breakpoint name (sm, md, lg, xl)
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == 'md' {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == 'lg' {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == 'xl' {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}
+
+/// Apply styles for screens smaller than the specified breakpoint
+/// @param {String} $breakpoint - Breakpoint name (sm, md, lg, xl)
+@mixin respond-below($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media (max-width: #{$breakpoint-sm - 1px}) {
+      @content;
+    }
+  } @else if $breakpoint == 'md' {
+    @media (max-width: #{$breakpoint-md - 1px}) {
+      @content;
+    }
+  } @else if $breakpoint == 'lg' {
+    @media (max-width: #{$breakpoint-lg - 1px}) {
+      @content;
+    }
+  } @else if $breakpoint == 'xl' {
+    @media (max-width: #{$breakpoint-xl - 1px}) {
+      @content;
+    }
+  }
+}
+
+/// Apply styles between two breakpoints
+/// @param {String} $lower - Lower breakpoint name
+/// @param {String} $upper - Upper breakpoint name
+@mixin respond-between($lower, $upper) {
+  $min: null;
+  $max: null;
+
+  @if $lower == 'xs' {
+    $min: $breakpoint-xs;
+  } @else if $lower == 'sm' {
+    $min: $breakpoint-sm;
+  } @else if $lower == 'md' {
+    $min: $breakpoint-md;
+  } @else if $lower == 'lg' {
+    $min: $breakpoint-lg;
+  }
+
+  @if $upper == 'sm' {
+    $max: $breakpoint-sm - 1px;
+  } @else if $upper == 'md' {
+    $max: $breakpoint-md - 1px;
+  } @else if $upper == 'lg' {
+    $max: $breakpoint-lg - 1px;
+  } @else if $upper == 'xl' {
+    $max: $breakpoint-xl - 1px;
+  }
+
+  @media (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
+
+// ============================================
+// FLEXBOX UTILITIES
+// ============================================
+
+/// Center content with flexbox
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Vertical flex column with centered content
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Flex row with space between items
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+/// Apply ellipsis for text overflow
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// Apply multi-line text clamp
+/// @param {Number} $lines - Number of lines to show
+@mixin text-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ============================================
+// VISUAL EFFECTS
+// ============================================
+
+/// Apply smooth transition
+/// @param {String} $property - CSS property to transition (default: all)
+@mixin transition($property: all) {
+  transition: $property $transition-normal;
+}
+
+/// Apply hover elevation effect
+@mixin hover-elevation {
+  transition:
+    box-shadow $transition-normal,
+    transform $transition-normal;
+
+  &:hover {
+    box-shadow: $elevation-3;
+    transform: translateY(-2px);
+  }
+}
+
+/// Apply focus ring for accessibility
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// ============================================
+// LAYOUT
+// ============================================
+
+/// Full viewport height considering mobile browsers
+@mixin full-height {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/// Container with max width and centered
+@mixin container {
+  width: 100%;
+  max-width: $content-max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $content-padding-mobile;
+  padding-right: $content-padding-mobile;
+
+  @include respond-to('md') {
+    padding-left: $content-padding;
+    padding-right: $content-padding;
+  }
+}
+
+/// Hide element visually but keep it accessible
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ============================================
+// SCROLLBAR
+// ============================================
+
+/// Custom scrollbar styling
+@mixin custom-scrollbar($thumb-color: $color-grey-400, $track-color: transparent) {
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color $track-color;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb-color;
+    border-radius: $border-radius-full;
+
+    &:hover {
+      background-color: color.adjust($thumb-color, $lightness: -10%);
+    }
+  }
+}

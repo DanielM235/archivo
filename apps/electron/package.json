@@ -1,0 +1,114 @@
+{
+  "name": "@archivo/electron",
+  "version": "0.1.0",
+  "description": "Archivo desktop application",
+  "author": {
+    "name": "DMLA",
+    "email": "dmla.dev@gmail.com"
+  },
+  "homepage": "https://github.com/DanielM235/archivo",
+  "private": true,
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "build:unpack": "pnpm run clean && electron-vite build && electron-builder --dir",
+    "build:win": "pnpm run clean && electron-vite build && electron-builder --win",
+    "build:mac": "pnpm run clean && electron-vite build && electron-builder --mac",
+    "build:linux": "pnpm run clean && electron-vite build && electron-builder --linux",
+    "package": "pnpm run clean && electron-vite build && electron-builder",
+    "preview": "electron-vite preview",
+    "clean": "rimraf dist out",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@archivo/file-operations": "workspace:*",
+    "@archivo/shared": "workspace:*",
+    "@archivo/ui": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.3",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "electron": "^35.2.0",
+    "electron-builder": "^26.0.0",
+    "electron-vite": "^5.0.0",
+    "rimraf": "^6.0.1",
+    "sass": "^1.89.4",
+    "typescript": "^5.8.3",
+    "vite": "^7.3.0"
+  },
+  "build": {
+    "appId": "com.archivo.app",
+    "productName": "Archivo",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "buildResources": "resources",
+      "output": "out"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.png",
+      "signAndEditExecutable": false
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.png",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.png",
+      "category": "Utility",
+      "maintainer": "DMLA <dmla.dev@gmail.com>"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

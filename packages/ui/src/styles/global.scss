@@ -1,0 +1,205 @@
+// ============================================
+// ARCHIVO - GLOBAL STYLES
+// ============================================
+
+@use 'variables' as *;
+@use 'mixins' as *;
+@use 'theme';
+
+// ============================================
+// CSS RESET & NORMALIZE
+// ============================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+  color: var(--color-text-primary);
+  background-color: var(--color-background-default);
+  @include full-height;
+}
+
+// ============================================
+// ROOT ELEMENT
+// ============================================
+
+#root {
+  @include full-height;
+  display: flex;
+  flex-direction: column;
+}
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: $font-size-4xl;
+}
+
+h2 {
+  font-size: $font-size-3xl;
+}
+
+h3 {
+  font-size: $font-size-2xl;
+}
+
+h4 {
+  font-size: $font-size-xl;
+}
+
+h5 {
+  font-size: $font-size-lg;
+}
+
+h6 {
+  font-size: $font-size-md;
+}
+
+p {
+  margin-bottom: $spacing-md;
+}
+
+a {
+  color: var(--color-primary-main);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring;
+}
+
+// ============================================
+// LISTS
+// ============================================
+
+ul,
+ol {
+  list-style: none;
+}
+
+// ============================================
+// IMAGES & MEDIA
+// ============================================
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+// ============================================
+// FORMS
+// ============================================
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+
+  @include focus-ring;
+}
+
+// ============================================
+// ACCESSIBILITY
+// ============================================
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+// Skip link for keyboard navigation
+.skip-link {
+  @include visually-hidden;
+
+  &:focus {
+    position: fixed;
+    top: $spacing-sm;
+    left: $spacing-sm;
+    z-index: $z-index-tooltip;
+    padding: $spacing-sm $spacing-md;
+    background-color: var(--color-primary-main);
+    color: var(--color-primary-contrast);
+    border-radius: $border-radius-sm;
+    width: auto;
+    height: auto;
+    clip: auto;
+  }
+}
+
+// ============================================
+// SCROLLBAR
+// ============================================
+
+body {
+  @include custom-scrollbar;
+}
+
+// ============================================
+// SELECTION
+// ============================================
+
+::selection {
+  background-color: var(--color-primary-main);
+  color: var(--color-primary-contrast);
+}
+
+// ============================================
+// UTILITIES
+// ============================================
+
+.container {
+  @include container;
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.text-ellipsis {
+  @include text-ellipsis;
+}
