@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { FileListView } from './FileListView';
@@ -261,7 +261,7 @@ describe('FileListView', () => {
     it('should render card view on mobile', () => {
       // Mock useMediaQuery to return true for mobile
       const originalMatchMedia = window.matchMedia;
-      window.matchMedia = vi.fn().mockImplementation((query) => ({
+      window.matchMedia = vi.fn().mockImplementation((query: string) => ({
         matches: query.includes('max-width') || query.includes('(max-width'),
         media: query,
         onchange: null,

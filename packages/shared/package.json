@@ -1,6 +1,6 @@
 {
   "name": "@archivo/shared",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Core shared code for Archivo application",
   "type": "module",
   "main": "./dist/index.js",
