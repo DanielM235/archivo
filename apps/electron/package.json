@@ -8,11 +8,11 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "build:unpack": "electron-vite build && electron-builder --dir",
-    "build:win": "electron-vite build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux",
-    "package": "electron-vite build && electron-builder",
+    "build:unpack": "pnpm run clean && electron-vite build && electron-builder --dir",
+    "build:win": "pnpm run clean && electron-vite build && electron-builder --win",
+    "build:mac": "pnpm run clean && electron-vite build && electron-builder --mac",
+    "build:linux": "pnpm run clean && electron-vite build && electron-builder --linux",
+    "package": "pnpm run clean && electron-vite build && electron-builder",
     "preview": "electron-vite preview",
     "clean": "rimraf dist out",
     "type-check": "tsc --noEmit",
@@ -65,7 +65,7 @@
           ]
         }
       ],
-      "icon": "resources/icon.ico",
+      "icon": "resources/icon.png",
       "signAndEditExecutable": false
     },
     "mac": {
@@ -78,7 +78,7 @@
           ]
         }
       ],
-      "icon": "resources/icon.icns",
+      "icon": "resources/icon.png",
       "category": "public.app-category.utilities"
     },
     "linux": {
@@ -96,7 +96,7 @@
           ]
         }
       ],
-      "icon": "resources/icons",
+      "icon": "resources/icon.png",
       "category": "Utility"
     },
     "nsis": {
