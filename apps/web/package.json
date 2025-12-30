@@ -1,0 +1,40 @@
+{
+  "name": "@archivo/web",
+  "version": "0.1.0",
+  "description": "Archivo web application",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@archivo/shared": "workspace:*",
+    "@archivo/ui": "workspace:*",
+    "@archivo/file-operations": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.3",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.6.0",
+    "rimraf": "^6.0.1",
+    "sass": "^1.89.4",
+    "typescript": "^5.8.3",
+    "vite": "^7.3.0"
+  }
+}

@@ -1,0 +1,2 @@
+# Shared code between Electron main and renderer processes
+# Example: IPC channel constants, shared types
