@@ -2,5 +2,13 @@
  * Shared interfaces exports
  */
 
-// Placeholder export - add interfaces as they are created
-export {};
+export type {
+  IRenameFileInfo,
+  IRenameConfig,
+  IRenameResult,
+  SeparatorType,
+  NameOrderType,
+  RenameProcessState,
+} from './IRenameConfig';
+
+export { DEFAULT_RENAME_CONFIG, SEPARATOR_OPTIONS, NAME_ORDER_OPTIONS } from './IRenameConfig';

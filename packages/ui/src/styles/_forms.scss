@@ -1,0 +1,217 @@
+// ============================================
+// ARCHIVO - FORM STYLES & MIXINS
+// ============================================
+// Reusable form validation and input styles
+// ============================================
+
+@use 'sass:color';
+@use 'variables' as *;
+
+// ============================================
+// FORM VALIDATION STATES
+// ============================================
+
+/// Mixin for error state styling on form inputs
+/// Applies error colors and styling to inputs in an invalid state
+@mixin form-input-error {
+  border-color: $color-error !important;
+
+  &:hover {
+    border-color: $color-error-dark !important;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: $color-error !important;
+    box-shadow: 0 0 0 2px color.adjust($color-error, $alpha: -0.8);
+  }
+}
+
+/// Mixin for success state styling on form inputs
+@mixin form-input-success {
+  border-color: $color-success !important;
+
+  &:hover {
+    border-color: $color-success-dark !important;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: $color-success !important;
+    box-shadow: 0 0 0 2px color.adjust($color-success, $alpha: -0.8);
+  }
+}
+
+/// Mixin for warning state styling on form inputs
+@mixin form-input-warning {
+  border-color: $color-warning !important;
+
+  &:hover {
+    border-color: $color-warning-dark !important;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: $color-warning !important;
+    box-shadow: 0 0 0 2px color.adjust($color-warning, $alpha: -0.8);
+  }
+}
+
+// ============================================
+// FORM HELPER TEXT STYLES
+// ============================================
+
+/// Mixin for error helper text
+@mixin form-helper-error {
+  color: $color-error;
+  font-size: $font-size-xs;
+  margin-top: $spacing-xs;
+}
+
+/// Mixin for success helper text
+@mixin form-helper-success {
+  color: $color-success;
+  font-size: $font-size-xs;
+  margin-top: $spacing-xs;
+}
+
+/// Mixin for warning helper text
+@mixin form-helper-warning {
+  color: $color-warning;
+  font-size: $font-size-xs;
+  margin-top: $spacing-xs;
+}
+
+/// Mixin for info helper text
+@mixin form-helper-info {
+  color: $color-info;
+  font-size: $font-size-xs;
+  margin-top: $spacing-xs;
+}
+
+// ============================================
+// FORM LABEL STYLES
+// ============================================
+
+/// Mixin for error label
+@mixin form-label-error {
+  color: $color-error !important;
+}
+
+/// Mixin for required field indicator
+@mixin form-label-required {
+  &::after {
+    content: ' *';
+    color: $color-error;
+  }
+}
+
+// ============================================
+// FORM FIELD CONTAINERS
+// ============================================
+
+/// Mixin for form field with validation state
+/// @param {String} $state - Validation state (error, success, warning)
+@mixin form-field-state($state) {
+  @if $state == 'error' {
+    .MuiOutlinedInput-root {
+      @include form-input-error;
+    }
+
+    .MuiInputLabel-root {
+      @include form-label-error;
+    }
+
+    .MuiFormHelperText-root {
+      @include form-helper-error;
+    }
+  } @else if $state == 'success' {
+    .MuiOutlinedInput-root {
+      @include form-input-success;
+    }
+
+    .MuiFormHelperText-root {
+      @include form-helper-success;
+    }
+  } @else if $state == 'warning' {
+    .MuiOutlinedInput-root {
+      @include form-input-warning;
+    }
+
+    .MuiFormHelperText-root {
+      @include form-helper-warning;
+    }
+  }
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+
+/// Error state class for form fields
+.form-field--error {
+  @include form-field-state('error');
+}
+
+/// Success state class for form fields
+.form-field--success {
+  @include form-field-state('success');
+}
+
+/// Warning state class for form fields
+.form-field--warning {
+  @include form-field-state('warning');
+}
+
+/// Error helper text class
+.form-helper--error {
+  @include form-helper-error;
+}
+
+/// Success helper text class
+.form-helper--success {
+  @include form-helper-success;
+}
+
+/// Warning helper text class
+.form-helper--warning {
+  @include form-helper-warning;
+}
+
+/// Info helper text class
+.form-helper--info {
+  @include form-helper-info;
+}
+
+// ============================================
+// FORM VALIDATION RULES DISPLAY
+// ============================================
+
+/// Styles for displaying validation rules
+.form-validation-rules {
+  font-size: $font-size-xs;
+  color: $color-grey-600;
+  margin-top: $spacing-xs;
+  padding: $spacing-sm;
+  background-color: $color-grey-100;
+  border-radius: $border-radius-sm;
+
+  .validation-rule {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-xs;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--valid {
+      color: $color-success;
+    }
+
+    &--invalid {
+      color: $color-error;
+    }
+  }
+}

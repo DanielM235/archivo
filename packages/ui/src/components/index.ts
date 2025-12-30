@@ -2,5 +2,6 @@
  * UI components exports
  */
 
-// Placeholder export - add components as they are created
-export {};
+export { FileBrowser, type IFileBrowserProps } from './FileBrowser';
+export { FileListView, type IFileListViewProps } from './FileListView';
+export { RenameConfigForm, type IRenameConfigFormProps } from './RenameConfigForm';

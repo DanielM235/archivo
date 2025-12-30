@@ -2,5 +2,4 @@
  * Shared services exports
  */
 
-// Placeholder export - add services as they are created
-export {};
+export { RenameService } from './RenameService';
