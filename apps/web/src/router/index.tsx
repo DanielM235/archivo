@@ -1,4 +1,4 @@
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, type RouteObject } from 'react-router-dom';
 import { RootLayout } from '@/layouts/RootLayout';
 import { HomePage } from '@/views/HomePage';
 import { NotFoundPage } from '@/views/NotFoundPage';
@@ -24,6 +24,10 @@ const routes: RouteObject[] = [
 ];
 
 /**
- * Browser router instance for the web application
+ * Router instance
+ * Uses HashRouter for Electron (file:// protocol) and BrowserRouter for web
  */
-export const router = createBrowserRouter(routes);
+export const router =
+  typeof window !== 'undefined' && window.location.protocol === 'file:'
+    ? createHashRouter(routes)
+    : createBrowserRouter(routes);

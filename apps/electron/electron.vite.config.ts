@@ -30,6 +30,7 @@ export default defineConfig({
     // Use the Electron renderer folder which loads the shared web app
     root: resolve(__dirname, 'src/renderer'),
     publicDir: resolve(__dirname, 'src/renderer/public'),
+    base: './',
     build: {
       outDir: resolve(__dirname, 'dist/renderer'),
       rollupOptions: {

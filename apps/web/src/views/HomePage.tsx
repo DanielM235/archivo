@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { Box, Container, Typography, Card, CardContent, useMediaQuery, Grid } from '@archivo/ui';
 import { useTheme as useMuiTheme, alpha } from '@mui/material/styles';
+import { getAssetPath } from '@archivo/shared';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
@@ -178,7 +179,7 @@ export const HomePage: FC = () => {
           >
             <Box
               component="img"
-              src="/archivo-icon-animated.svg"
+              src={getAssetPath('/archivo-icon-animated.svg')}
               alt="Archivo"
               sx={{
                 width: { xs: 100, sm: 120, md: 140 },

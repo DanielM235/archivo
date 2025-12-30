@@ -2,7 +2,11 @@
   "name": "@archivo/electron",
   "version": "0.1.0",
   "description": "Archivo desktop application",
-  "author": "Archivo Team",
+  "author": {
+    "name": "DMLA",
+    "email": "dmla.dev@gmail.com"
+  },
+  "homepage": "https://github.com/DanielM235/archivo",
   "private": true,
   "main": "dist/main/main.js",
   "scripts": {
@@ -49,6 +53,7 @@
   "build": {
     "appId": "com.archivo.app",
     "productName": "Archivo",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "directories": {
       "buildResources": "resources",
       "output": "out"
@@ -97,7 +102,8 @@
         }
       ],
       "icon": "resources/icon.png",
-      "category": "Utility"
+      "category": "Utility",
+      "maintainer": "DMLA <dmla.dev@gmail.com>"
     },
     "nsis": {
       "oneClick": false,

@@ -57,6 +57,10 @@
     "electron",
     "react"
   ],
-  "author": "",
+  "author": {
+    "name": "DMLA",
+    "email": "dmla.dev@gmail.com"
+  },
+  "homepage": "https://github.com/DanielM235/archivo",
   "license": "MIT"
 }

@@ -31,7 +31,6 @@ function createWindow(): void {
   // In dev mode, electron-vite sets ELECTRON_RENDERER_URL
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
-    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   }

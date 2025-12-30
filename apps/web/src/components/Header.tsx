@@ -2,6 +2,7 @@ import { type FC } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box, Tooltip, useMediaQuery } from '@archivo/ui';
 import { useTheme } from '@archivo/ui';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
+import { getAssetPath } from '@archivo/shared';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
@@ -26,7 +27,7 @@ export const Header: FC = () => {
       <Toolbar>
         <Box
           component="img"
-          src="/favicon.svg"
+          src={getAssetPath('/favicon.svg')}
           alt="Archivo"
           sx={{
             width: isMobile ? 28 : 32,
