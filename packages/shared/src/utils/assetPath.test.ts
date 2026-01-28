@@ -7,7 +7,7 @@ describe('getAssetPath', () => {
   beforeEach(() => {
     // Setup window mock if it doesn't exist
     if (!global.window) {
-      (global as any).window = {};
+      (global as unknown as { window: unknown }).window = {};
     }
     // Reset to default base path
     configureAssetBasePath('/');
@@ -18,13 +18,13 @@ describe('getAssetPath', () => {
     if (originalWindow) {
       global.window = originalWindow;
     } else {
-      delete (global as any).window;
+      delete (global as unknown as { window?: unknown }).window;
     }
   });
 
   describe('configureAssetBasePath', () => {
     beforeEach(() => {
-      (global as any).window = {
+      (global as unknown as { window: unknown }).window = {
         location: {
           protocol: 'http:',
           href: 'http://localhost:3000/index.html',
@@ -46,7 +46,7 @@ describe('getAssetPath', () => {
   describe('Web environment (http/https)', () => {
     beforeEach(() => {
       // Mock web environment
-      (global as any).window = {
+      (global as unknown as { window: unknown }).window = {
         location: {
           protocol: 'http:',
           href: 'http://localhost:3000/index.html',
@@ -78,7 +78,7 @@ describe('getAssetPath', () => {
   describe('Electron environment (file://)', () => {
     beforeEach(() => {
       // Mock Electron environment
-      (global as any).window = {
+      (global as unknown as { window: unknown }).window = {
         location: {
           protocol: 'file:',
           href: 'file:///opt/Archivo/resources/app/dist/renderer/index.html',
@@ -110,7 +110,7 @@ describe('getAssetPath', () => {
   describe('Edge cases', () => {
     beforeEach(() => {
       // Mock web environment
-      (global as any).window = {
+      (global as unknown as { window: unknown }).window = {
         location: {
           protocol: 'https:',
           href: 'https://example.com/app/index.html',

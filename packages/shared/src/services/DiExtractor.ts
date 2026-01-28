@@ -30,6 +30,10 @@ export class DiExtractor {
     // Normalize text for easier parsing
     const normalizedText = this.normalizeText(text);
 
+    // Extract DI number and date
+    const diNumber = this.extractDiNumber(text, errors);
+    const diDate = this.extractDiDate(text, errors);
+
     // Extract VMLD value
     const vmldValueUsd = this.extractVmldValue(normalizedText, errors);
 
@@ -44,6 +48,8 @@ export class DiExtractor {
 
     return {
       sourceFileName: fileName,
+      diNumber,
+      diDate,
       vmldValueUsd,
       usdToBrlRate: usdRate,
       eurToBrlRate: eurRate,
@@ -58,6 +64,38 @@ export class DiExtractor {
    */
   private normalizeText(text: string): string {
     return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Extract DI number from text
+   * Format: "Declaração: 23/0602316-5"
+   */
+  private extractDiNumber(text: string, errors: string[]): string {
+    // Pattern for DI number: "Declaração: XX/XXXXXXX-X"
+    const pattern = /Declara[çc][ãa]o\s*:\s*([\d/-]+)/i;
+    const match = text.match(pattern);
+    if (match?.[1]) {
+      return match[1].trim();
+    }
+
+    errors.push('Could not extract DI number');
+    return '';
+  }
+
+  /**
+   * Extract DI registration date from text
+   * Format: "Data do Registro: 28/03/2023"
+   */
+  private extractDiDate(text: string, errors: string[]): string {
+    // Pattern for DI date: "Data do Registro: DD/MM/YYYY"
+    const pattern = /Data\s+do\s+Registro\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
+    const match = text.match(pattern);
+    if (match?.[1]) {
+      return match[1].trim();
+    }
+
+    errors.push('Could not extract DI date');
+    return '';
   }
 
   /**

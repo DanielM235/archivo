@@ -8,6 +8,16 @@ export interface IDiData {
   sourceFileName: string;
 
   /**
+   * DI number (e.g., "23/0602316-5")
+   */
+  diNumber: string;
+
+  /**
+   * DI registration date (e.g., "28/03/2023")
+   */
+  diDate: string;
+
+  /**
    * VMLD value in USD (Valor da Mercadoria no Local de Descarga)
    * Format: "409.635,02"
    */
@@ -81,6 +91,16 @@ export interface IReconciliationContract {
   contractDate: string;
 
   /**
+   * DI number (e.g., "23/0602316-5")
+   */
+  diNumber: string;
+
+  /**
+   * DI registration date (e.g., "28/03/2023")
+   */
+  diDate: string;
+
+  /**
    * Original foreign currency value
    */
   foreignCurrencyValue: string;
@@ -94,6 +114,21 @@ export interface IReconciliationContract {
    * Value converted to EUR (formatted as Brazilian number)
    */
   eurValue: string;
+
+  /**
+   * Value in BRL from contract (formatted as Brazilian number)
+   */
+  brlValue: string;
+
+  /**
+   * Exchange rate from the contract
+   */
+  exchangeRate: string;
+
+  /**
+   * Value converted to USD (formatted as Brazilian number)
+   */
+  usdValue: string;
 
   /**
    * Source file name
@@ -116,9 +151,26 @@ export interface IReconciliationSummary {
   totalContractsEur: string;
 
   /**
+   * Total sum of all contracts in BRL (formatted as Brazilian number)
+   */
+  totalContractsBrl: string;
+
+  /**
+   * Total sum of all contracts in USD (formatted as Brazilian number)
+   */
+  totalContractsUsd: string;
+
+  /**
+   * EUR to USD conversion rate (inverse of usdToEurRate)
+   */
+  eurToUsdRate: string;
+
+  /**
    * DI data summary
    */
   di: {
+    diNumber: string;
+    diDate: string;
     vmldValueUsd: string;
     usdToBrlRate: string;
     eurToBrlRate: string;

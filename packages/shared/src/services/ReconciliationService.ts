@@ -17,13 +17,26 @@ export class ReconciliationService {
     di: IDiData,
     vesselName?: string
   ): IReconciliationSummary {
-    // Map contracts to reconciliation format with EUR values
+    // Calculate EUR to USD rate (inverse of USD to EUR)
+    const usdToEurRateNum = this.parseNumber(di.usdToEurRate);
+    const eurToUsdRateNum = usdToEurRateNum > 0 ? 1 / usdToEurRateNum : 0;
+    const eurToUsdRate = eurToUsdRateNum.toFixed(4).replace('.', ',');
+
+    // Map contracts to reconciliation format with EUR, BRL, and USD values
     const reconciliationContracts = contracts.map((contract) =>
-      this.mapContractToReconciliation(contract, di.usdToEurRate)
+      this.mapContractToReconciliation(
+        contract,
+        di.usdToEurRate,
+        eurToUsdRateNum,
+        di.diNumber,
+        di.diDate
+      )
     );
 
-    // Calculate total EUR from contracts
-    const totalContractsEur = this.calculateTotal(reconciliationContracts);
+    // Calculate totals
+    const totalContractsEur = this.calculateTotalEur(reconciliationContracts);
+    const totalContractsBrl = this.calculateTotalBrl(reconciliationContracts);
+    const totalContractsUsd = this.calculateTotalUsd(reconciliationContracts);
 
     // Calculate difference
     const diEur = this.parseNumber(di.vmldValueEur);
@@ -33,7 +46,12 @@ export class ReconciliationService {
     return {
       contracts: reconciliationContracts,
       totalContractsEur: this.formatBrazilianNumber(totalContractsEur),
+      totalContractsBrl: this.formatBrazilianNumber(totalContractsBrl),
+      totalContractsUsd: this.formatBrazilianNumber(totalContractsUsd),
+      eurToUsdRate,
       di: {
+        diNumber: di.diNumber,
+        diDate: di.diDate,
         vmldValueUsd: di.vmldValueUsd,
         usdToBrlRate: di.usdToBrlRate,
         eurToBrlRate: di.eurToBrlRate,
@@ -50,7 +68,10 @@ export class ReconciliationService {
    */
   private mapContractToReconciliation(
     contract: IContractData,
-    usdToEurRate: string
+    usdToEurRate: string,
+    eurToUsdRate: number,
+    diNumber: string,
+    diDate: string
   ): IReconciliationContract {
     // Get the foreign currency value
     const foreignValue = this.parseNumber(contract.foreignCurrencyValue);
@@ -69,22 +90,51 @@ export class ReconciliationService {
       eurValue = foreignValue;
     }
 
+    // Get BRL value from contract
+    const brlValue = this.parseNumber(contract.localCurrencyValue);
+
+    // Calculate USD value from EUR using the EUR to USD rate
+    const usdValue = eurValue * eurToUsdRate;
+
     return {
       contractNumber: contract.contractNumber,
       contractDate: contract.contractDate,
+      diNumber,
+      diDate,
       foreignCurrencyValue: contract.foreignCurrencyValue,
       foreignCurrencyType: currency,
       eurValue: this.formatBrazilianNumber(eurValue),
+      brlValue: this.formatBrazilianNumber(brlValue),
+      exchangeRate: contract.exchangeRate,
+      usdValue: this.formatBrazilianNumber(usdValue),
       sourceFile: contract.sourceFileName || '',
     };
   }
 
   /**
-   * Calculate total from reconciliation contracts
+   * Calculate total EUR from reconciliation contracts
    */
-  private calculateTotal(contracts: IReconciliationContract[]): number {
+  private calculateTotalEur(contracts: IReconciliationContract[]): number {
     return contracts.reduce((total, contract) => {
       return total + this.parseNumber(contract.eurValue);
+    }, 0);
+  }
+
+  /**
+   * Calculate total BRL from reconciliation contracts
+   */
+  private calculateTotalBrl(contracts: IReconciliationContract[]): number {
+    return contracts.reduce((total, contract) => {
+      return total + this.parseNumber(contract.brlValue);
+    }, 0);
+  }
+
+  /**
+   * Calculate total USD from reconciliation contracts
+   */
+  private calculateTotalUsd(contracts: IReconciliationContract[]): number {
+    return contracts.reduce((total, contract) => {
+      return total + this.parseNumber(contract.usdValue);
     }, 0);
   }
 
