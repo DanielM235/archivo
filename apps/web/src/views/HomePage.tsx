@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { Box, Container, Typography, Card, CardContent, useMediaQuery, Grid } from '@archivo/ui';
 import { useTheme as useMuiTheme, alpha } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import { getAssetPath } from '@archivo/shared';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
@@ -19,6 +20,7 @@ interface IFeatureCard {
   icon: React.ReactNode;
   color: string;
   comingSoon?: boolean;
+  route?: string;
 }
 
 /**
@@ -30,7 +32,7 @@ const features: IFeatureCard[] = [
     description: 'Rename multiple files at once using patterns, regex, or custom rules.',
     icon: <DriveFileRenameOutlineIcon sx={{ fontSize: 40 }} />,
     color: '#1976d2',
-    comingSoon: true,
+    route: '/rename',
   },
   {
     title: 'Move Files',
@@ -72,22 +74,33 @@ const features: IFeatureCard[] = [
 /**
  * Feature card component
  */
-const FeatureCard: FC<{ feature: IFeatureCard }> = ({ feature }) => {
+const FeatureCard: FC<{ feature: IFeatureCard; onNavigate?: (route: string) => void }> = ({
+  feature,
+  onNavigate,
+}) => {
   const theme = useMuiTheme();
+  const isClickable = !!feature.route && !feature.comingSoon;
+
+  const handleClick = () => {
+    if (isClickable && feature.route && onNavigate) {
+      onNavigate(feature.route);
+    }
+  };
 
   return (
     <Card
+      onClick={handleClick}
       sx={{
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         transition: 'all 0.3s ease-in-out',
-        cursor: feature.comingSoon ? 'default' : 'pointer',
+        cursor: isClickable ? 'pointer' : 'default',
         position: 'relative',
         overflow: 'visible',
         '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: theme.shadows[8],
+          transform: isClickable ? 'translateY(-4px)' : 'none',
+          boxShadow: isClickable ? theme.shadows[8] : undefined,
         },
       }}
     >
@@ -152,7 +165,12 @@ const FeatureCard: FC<{ feature: IFeatureCard }> = ({ feature }) => {
  */
 export const HomePage: FC = () => {
   const theme = useMuiTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleNavigate = (route: string) => {
+    navigate(route);
+  };
 
   return (
     <Box
@@ -225,7 +243,7 @@ export const HomePage: FC = () => {
         <Grid container spacing={3}>
           {features.map((feature) => (
             <Grid key={feature.title} size={{ xs: 12, sm: 6, md: 4 }}>
-              <FeatureCard feature={feature} />
+              <FeatureCard feature={feature} onNavigate={handleNavigate} />
             </Grid>
           ))}
         </Grid>

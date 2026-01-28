@@ -2,6 +2,7 @@ import { createBrowserRouter, createHashRouter, type RouteObject } from 'react-r
 import { RootLayout } from '@/layouts/RootLayout';
 import { HomePage } from '@/views/HomePage';
 import { NotFoundPage } from '@/views/NotFoundPage';
+import { RenamePage } from '@/views/RenamePage';
 
 /**
  * Application routes configuration
@@ -14,6 +15,10 @@ const routes: RouteObject[] = [
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'rename',
+        element: <RenamePage />,
       },
       {
         path: '*',

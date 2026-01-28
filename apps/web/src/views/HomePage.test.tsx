@@ -1,12 +1,22 @@
 import '@testing-library/jest-dom/vitest';
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import { ThemeProvider } from '@archivo/ui';
 
 // Mock __APP_VERSION__
 vi.stubGlobal('__APP_VERSION__', '0.1.0');
+
+// Mock useNavigate
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // Mock matchMedia - default to desktop
 const mockMatchMedia = (matches: boolean = false) => {
@@ -49,6 +59,11 @@ const renderWithProviders = (ui: React.ReactElement) => {
 };
 
 describe('HomePage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockMatchMedia(false);
+  });
+
   it('should render the main heading', () => {
     renderWithProviders(<HomePage />);
 
@@ -94,7 +109,8 @@ describe('HomePage', () => {
     renderWithProviders(<HomePage />);
 
     const comingSoonBadges = screen.getAllByText('Coming Soon');
-    expect(comingSoonBadges.length).toBe(6);
+    // 5 features have comingSoon: true (Move Files, Folder Processing, Duplicate Files, Auto Rules, Settings)
+    expect(comingSoonBadges.length).toBe(5);
   });
 
   it('should render the version label', () => {
@@ -114,5 +130,26 @@ describe('HomePage', () => {
 
     // Reset to desktop
     mockMatchMedia(false);
+  });
+
+  it('should navigate to rename page when clicking Bulk Rename card', () => {
+    renderWithProviders(<HomePage />);
+
+    const bulkRenameCard = screen.getByText('Bulk Rename').closest('[class*="MuiCard"]');
+    expect(bulkRenameCard).not.toBeNull();
+    fireEvent.click(bulkRenameCard!);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/rename');
+  });
+
+  it('should not navigate when clicking Coming Soon cards', () => {
+    renderWithProviders(<HomePage />);
+
+    const moveFilesCard = screen.getByText('Move Files').closest('[class*="MuiCard"]');
+    expect(moveFilesCard).not.toBeNull();
+    fireEvent.click(moveFilesCard!);
+
+    // Should not navigate because it's a "Coming Soon" feature
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

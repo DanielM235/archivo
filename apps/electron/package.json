@@ -1,6 +1,6 @@
 {
   "name": "@archivo/electron",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Archivo desktop application",
   "author": {
     "name": "DMLA",
@@ -34,6 +34,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
+    "jszip": "^3.10.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.6.2"
