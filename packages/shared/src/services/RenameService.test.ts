@@ -392,6 +392,8 @@ describe('RenameService', () => {
     });
 
     it('should handle extraction errors', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
       const mockAdapter = {
         readZipEntries: vi.fn(),
         extractEntry: vi.fn().mockRejectedValue(new Error('Extraction failed')),
@@ -406,6 +408,12 @@ describe('RenameService', () => {
       const result = await RenameService.executeRename(new File([], 'test.zip'), files);
 
       expect(result.errorCount).toBe(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Error extracting file'),
+        expect.any(Error)
+      );
+
+      consoleErrorSpy.mockRestore();
     });
 
     it('should handle createZip failure', async () => {
@@ -473,6 +481,8 @@ describe('RenameService', () => {
     });
 
     it('should handle errors gracefully', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
       const mockHandle = {
         getFile: vi.fn().mockRejectedValue(new Error('Access denied')),
       } as unknown as FileSystemFileHandle;
@@ -480,6 +490,12 @@ describe('RenameService', () => {
       const result = await RenameService.processFolder([mockHandle]);
 
       expect(result).toHaveLength(0);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Error processing file handle'),
+        expect.any(Error)
+      );
+
+      consoleErrorSpy.mockRestore();
     });
 
     it('should process multiple file handles', async () => {

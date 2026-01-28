@@ -1,12 +1,13 @@
 {
   "name": "@archivo/web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Archivo web application",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:subdir": "cross-env VITE_BASE_URL=/archivo/ tsc -b && cross-env VITE_BASE_URL=/archivo/ vite build",
     "preview": "vite preview",
     "clean": "rimraf dist",
     "type-check": "tsc --noEmit",
@@ -17,25 +18,27 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@archivo/file-operations": "workspace:*",
     "@archivo/shared": "workspace:*",
     "@archivo/ui": "workspace:*",
-    "@archivo/file-operations": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.3.6",
-    "@mui/material": "^7.3.6",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "jszip": "^3.10.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-router-dom": "^7.6.2"
+    "pdfjs-dist": "^5.4.530",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.3",
+    "cross-env": "^10.1.0",
+    "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^4.6.0",
-    "rimraf": "^6.0.1",
-    "sass": "^1.89.4",
-    "typescript": "^5.8.3",
-    "vite": "^7.3.0"
+    "@vitejs/plugin-react": "^5.1.2",
+    "rimraf": "^6.1.2",
+    "sass": "^1.97.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }

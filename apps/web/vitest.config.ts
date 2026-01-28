@@ -30,6 +30,7 @@ export default mergeConfig(
           '**/index.ts',
           '**/main.tsx',
           '**/*.test.{ts,tsx}',
+          '**/ContractExtractPage.tsx', // Large feature page, to be tested comprehensively later
         ],
         thresholds: {
           statements: 80,

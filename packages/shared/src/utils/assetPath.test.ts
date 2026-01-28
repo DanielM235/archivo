@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { getAssetPath } from './assetPath';
+import { getAssetPath, configureAssetBasePath } from './assetPath';
 
 describe('getAssetPath', () => {
   const originalWindow = global.window;
@@ -9,6 +9,8 @@ describe('getAssetPath', () => {
     if (!global.window) {
       (global as any).window = {};
     }
+    // Reset to default base path
+    configureAssetBasePath('/');
   });
 
   afterEach(() => {
@@ -18,6 +20,27 @@ describe('getAssetPath', () => {
     } else {
       delete (global as any).window;
     }
+  });
+
+  describe('configureAssetBasePath', () => {
+    beforeEach(() => {
+      (global as any).window = {
+        location: {
+          protocol: 'http:',
+          href: 'http://localhost:3000/index.html',
+        },
+      };
+    });
+
+    it('should configure base path for subsequent calls', () => {
+      configureAssetBasePath('/myapp/');
+      expect(getAssetPath('/favicon.svg')).toBe('/myapp/favicon.svg');
+    });
+
+    it('should work with nested paths', () => {
+      configureAssetBasePath('/apps/archivo/');
+      expect(getAssetPath('/images/logo.svg')).toBe('/apps/archivo/images/logo.svg');
+    });
   });
 
   describe('Web environment (http/https)', () => {
@@ -31,16 +54,24 @@ describe('getAssetPath', () => {
       };
     });
 
-    it('should return the path as-is for http protocol', () => {
+    it('should prepend base path when set to root', () => {
+      configureAssetBasePath('/');
       expect(getAssetPath('/favicon.svg')).toBe('/favicon.svg');
     });
 
-    it('should return the path as-is for paths without leading slash', () => {
-      expect(getAssetPath('assets/icon.png')).toBe('assets/icon.png');
+    it('should prepend base path when set to subdirectory', () => {
+      configureAssetBasePath('/archivo/');
+      expect(getAssetPath('/favicon.svg')).toBe('/archivo/favicon.svg');
     });
 
-    it('should return the path as-is for absolute URLs', () => {
-      expect(getAssetPath('/images/logo.svg')).toBe('/images/logo.svg');
+    it('should handle paths without leading slash with subdirectory base', () => {
+      configureAssetBasePath('/archivo/');
+      expect(getAssetPath('assets/icon.png')).toBe('/archivo/assets/icon.png');
+    });
+
+    it('should handle nested subdirectory in base path', () => {
+      configureAssetBasePath('/apps/archivo/');
+      expect(getAssetPath('/images/logo.svg')).toBe('/apps/archivo/images/logo.svg');
     });
   });
 
@@ -85,10 +116,11 @@ describe('getAssetPath', () => {
           href: 'https://example.com/app/index.html',
         },
       };
+      configureAssetBasePath('/');
     });
 
     it('should handle empty string', () => {
-      expect(getAssetPath('')).toBe('');
+      expect(getAssetPath('')).toBe('/');
     });
 
     it('should handle paths with special characters', () => {

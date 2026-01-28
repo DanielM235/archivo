@@ -2,7 +2,7 @@
  * Shared utilities exports
  */
 
-export { getAssetPath } from './assetPath';
+export { getAssetPath, configureAssetBasePath } from './assetPath';
 
 // Utility classes
 export { StringUtils, type IValidationResult } from './string.utils';

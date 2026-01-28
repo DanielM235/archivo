@@ -1,6 +1,6 @@
 {
   "name": "@archivo/shared",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Core shared code for Archivo application",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,12 +27,13 @@
   },
   "dependencies": {
     "react": "^19.2.3",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@types/react": "^19.2.7",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.8.3"
+    "@types/react": "^19.2.10",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": "^19.0.0"

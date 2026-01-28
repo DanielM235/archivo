@@ -9,6 +9,7 @@ import FolderZipIcon from '@mui/icons-material/FolderZip';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DescriptionIcon from '@mui/icons-material/Description';
 import { VersionLabel } from '../components';
 
 /**
@@ -33,6 +34,13 @@ const features: IFeatureCard[] = [
     icon: <DriveFileRenameOutlineIcon sx={{ fontSize: 40 }} />,
     color: '#1976d2',
     route: '/rename',
+  },
+  {
+    title: 'Contract Extract',
+    description: 'Extract structured data from foreign exchange contract PDFs.',
+    icon: <DescriptionIcon sx={{ fontSize: 40 }} />,
+    color: '#00897b',
+    route: '/contract-extract',
   },
   {
     title: 'Move Files',

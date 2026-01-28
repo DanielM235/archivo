@@ -1,6 +1,6 @@
 {
   "name": "archivo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cross-platform application for bulk file manipulation operations",
   "private": true,
   "type": "module",
@@ -14,9 +14,10 @@
     "dev:web": "pnpm --filter @archivo/web dev",
     "dev:electron": "pnpm --filter @archivo/electron dev",
     "build": "pnpm run build:packages && pnpm run build:apps",
-    "build:packages": "pnpm --filter './packages/*' build",
-    "build:apps": "pnpm --filter './apps/*' build",
+    "build:packages": "pnpm --filter @archivo/packages/* build",
+    "build:apps": "pnpm --filter @archivo/apps/* build",
     "build:web": "pnpm --filter @archivo/web build",
+    "build:web:subdir": "pnpm --filter @archivo/web build:subdir",
     "build:electron": "pnpm --filter @archivo/electron build",
     "package:electron": "pnpm --filter @archivo/electron package",
     "generate:icons": "npx tsx scripts/generate-icons.ts",
@@ -31,24 +32,30 @@
     "clean": "pnpm run -r clean && rimraf node_modules",
     "prepare": "pnpm run build:packages"
   },
+  "pnpm": {
+    "overrides": {
+      "@types/node": "^25.0.10"
+    }
+  },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@types/node": "^22.15.29",
-    "@vitest/coverage-v8": "^4.0.16",
-    "eslint": "^9.28.0",
+    "cross-env": "^10.1.0",
+    "@eslint/js": "^9.39.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.0.10",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^9.39.2",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.2.0",
-    "jsdom": "^26.1.0",
-    "prettier": "^3.5.3",
-    "rimraf": "^6.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^17.2.0",
+    "jsdom": "^27.4.0",
+    "prettier": "^3.8.1",
+    "rimraf": "^6.1.2",
     "sharp": "^0.34.5",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1",
-    "vitest": "^4.0.16"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "file-management",

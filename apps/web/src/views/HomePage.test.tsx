@@ -75,7 +75,8 @@ describe('HomePage', () => {
 
     const icon = screen.getByAltText('Archivo');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveAttribute('src', '/archivo-icon-animated.svg');
+    // getAssetPath prepends BASE_URL which defaults to '/'
+    expect(icon).toHaveAttribute('src', expect.stringContaining('archivo-icon-animated.svg'));
   });
 
   it('should render the description', () => {
