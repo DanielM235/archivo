@@ -14,3 +14,6 @@ export { ContractCsvExporter } from './ContractCsvExporter';
 export { DiExtractor } from './DiExtractor';
 export { ReconciliationService } from './ReconciliationService';
 export { ReconciliationExcelExporter } from './ReconciliationExcelExporter';
+
+// Excel merge service
+export { ExcelMergerService } from './ExcelMergerService';

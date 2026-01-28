@@ -4,7 +4,7 @@ import { useTheme as useMuiTheme, alpha } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { getAssetPath } from '@archivo/shared';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
@@ -43,11 +43,11 @@ const features: IFeatureCard[] = [
     route: '/contract-extract',
   },
   {
-    title: 'Move Files',
-    description: 'Organize files by moving them to different folders based on criteria.',
-    icon: <DriveFileMoveIcon sx={{ fontSize: 40 }} />,
+    title: 'Excel Merge',
+    description: 'Merge multiple Excel files into a single file with one consolidated sheet.',
+    icon: <TableChartIcon sx={{ fontSize: 40 }} />,
     color: '#9c27b0',
-    comingSoon: true,
+    route: '/excel-merge',
   },
   {
     title: 'Folder Processing',

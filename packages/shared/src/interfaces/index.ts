@@ -34,3 +34,6 @@ export type {
   IReconciliationContract,
   IReconciliationSummary,
 } from './IDiData';
+
+// Excel merge interfaces
+export type { IExcelMergeFile, IExcelMergeResult, IExcelMergeConfig } from './IExcelMergeData';

@@ -4,6 +4,7 @@ import { HomePage } from '@/views/HomePage';
 import { NotFoundPage } from '@/views/NotFoundPage';
 import { RenamePage } from '@/views/RenamePage';
 import { ContractExtractPage } from '@/views/ContractExtractPage';
+import { ExcelMergePage } from '@/views/ExcelMergePage';
 
 /**
  * Application routes configuration
@@ -24,6 +25,10 @@ const routes: RouteObject[] = [
       {
         path: 'contract-extract',
         element: <ContractExtractPage />,
+      },
+      {
+        path: 'excel-merge',
+        element: <ExcelMergePage />,
       },
       {
         path: '*',
