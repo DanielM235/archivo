@@ -1,4 +1,4 @@
-import { type FC, useState, useCallback, useRef } from 'react';
+import { type FC, useState, useCallback, useRef, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -20,6 +20,11 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@archivo/ui';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +37,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import {
   type IExcelMergeResult,
   type IExcelMergeConfig,
@@ -58,8 +64,106 @@ export const ExcelMergePage: FC = () => {
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [result, setResult] = useState<IExcelMergeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sheetName, setSheetName] = useState<string>('');
+  const [availableSheets, setAvailableSheets] = useState<string[]>([]);
+  const [selectedSheet, setSelectedSheet] = useState<string>('');
   const [outputSheetName, setOutputSheetName] = useState<string>('Merged Data');
+  const [headers, setHeaders] = useState<string[]>([]);
+  const [selectedColumns, setSelectedColumns] = useState<Set<number>>(new Set());
+
+  /**
+   * Extract available sheets from first file when files are uploaded
+   */
+  useEffect(() => {
+    const loadSheets = async () => {
+      if (files.length > 0 && availableSheets.length === 0) {
+        const firstFile = files[0];
+        if (!firstFile) return;
+
+        try {
+          const sheets = await mergerService.current.getSheetNames(firstFile);
+          setAvailableSheets(sheets);
+          // Auto-select first sheet
+          if (sheets.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            setSelectedSheet(sheets[0]!);
+          }
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to load sheet names');
+        }
+      }
+    };
+
+    loadSheets();
+  }, [files, availableSheets.length]);
+
+  /**
+   * Extract headers when sheet is selected
+   */
+  useEffect(() => {
+    const loadHeaders = async () => {
+      if (files.length > 0 && selectedSheet && headers.length === 0) {
+        const firstFile = files[0];
+        if (!firstFile) return;
+
+        try {
+          const result = await mergerService.current.extractHeaders(firstFile, {
+            targetSheetName: selectedSheet,
+          });
+
+          if (result.success && result.headers) {
+            setHeaders(result.headers);
+            // Select all columns by default
+            setSelectedColumns(new Set(result.headers.map((_, idx) => idx)));
+          } else {
+            setError(result.error || 'Failed to extract headers');
+          }
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to extract headers');
+        }
+      }
+    };
+
+    loadHeaders();
+  }, [files, selectedSheet, headers.length]);
+
+  /**
+   * Handle sheet selection change
+   */
+  const handleSheetChange = useCallback((newSheet: string) => {
+    setSelectedSheet(newSheet);
+    // Reset headers and column selection when sheet changes
+    setHeaders([]);
+    setSelectedColumns(new Set());
+  }, []);
+
+  /**
+   * Toggle column selection
+   */
+  const toggleColumn = useCallback((index: number) => {
+    setSelectedColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }, []);
+
+  /**
+   * Select/deselect all columns
+   */
+  const toggleAllColumns = useCallback(
+    (checked: boolean) => {
+      if (checked) {
+        setSelectedColumns(new Set(headers.map((_, idx) => idx)));
+      } else {
+        setSelectedColumns(new Set());
+      }
+    },
+    [headers]
+  );
 
   /**
    * Handle file selection
@@ -122,6 +226,10 @@ export const ExcelMergePage: FC = () => {
     setResult(null);
     setError(null);
     setProcessingState('idle');
+    setAvailableSheets([]);
+    setSelectedSheet('');
+    setHeaders([]);
+    setSelectedColumns(new Set());
   }, []);
 
   /**
@@ -136,9 +244,11 @@ export const ExcelMergePage: FC = () => {
 
     try {
       const config: IExcelMergeConfig = {
-        targetSheetName: sheetName.trim() || undefined,
+        targetSheetName: selectedSheet,
         outputSheetName: outputSheetName.trim() || 'Merged Data',
         includeMargins: true,
+        selectedColumnIndices:
+          selectedColumns.size > 0 ? Array.from(selectedColumns).sort((a, b) => a - b) : undefined,
       };
 
       const mergeResult = await mergerService.current.mergeFiles(
@@ -162,7 +272,7 @@ export const ExcelMergePage: FC = () => {
       setError(errorMessage);
       setProcessingState('error');
     }
-  }, [files, sheetName, outputSheetName]);
+  }, [files, selectedSheet, outputSheetName, selectedColumns]);
 
   /**
    * Download merged file
@@ -221,39 +331,11 @@ export const ExcelMergePage: FC = () => {
         </Box>
       </Box>
 
-      {/* Configuration Section */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Configuration
-          </Typography>
-          <Stack spacing={2}>
-            <TextField
-              label="Sheet Name (Optional)"
-              value={sheetName}
-              onChange={(e) => setSheetName(e.target.value)}
-              placeholder="Leave empty to use first sheet"
-              helperText="Specify the name of the sheet to extract from each file. If empty, the first sheet will be used."
-              fullWidth
-            />
-            <TextField
-              label="Output Sheet Name"
-              value={outputSheetName}
-              onChange={(e) => setOutputSheetName(e.target.value)}
-              placeholder="Merged Data"
-              helperText="Name for the sheet in the output file"
-              fullWidth
-              required
-            />
-          </Stack>
-        </CardContent>
-      </Card>
-
       {/* File Upload Section */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Select Excel Files
+            Step 1: Select Excel Files
           </Typography>
 
           {/* Drag & Drop Area */}
@@ -351,15 +433,173 @@ export const ExcelMergePage: FC = () => {
               </Stack>
             </Box>
           )}
+        </CardContent>
+      </Card>
 
-          {/* Action Buttons */}
-          {files.length > 0 && (
-            <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+      {/* Sheet Selection - Step 2 */}
+      {files.length > 0 && availableSheets.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Step 2: Select Sheet
+            </Typography>
+            <FormControl fullWidth>
+              <InputLabel>Sheet to Merge</InputLabel>
+              <Select
+                value={selectedSheet}
+                onChange={(e) => handleSheetChange(e.target.value)}
+                label="Sheet to Merge"
+                disabled={processingState === 'processing'}
+              >
+                {availableSheets.map((sheet) => (
+                  <MenuItem key={sheet} value={sheet}>
+                    {sheet}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Column Selection - Step 3 */}
+      {selectedSheet && headers.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Step 3: Select Columns
+            </Typography>
+            <Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <ViewColumnIcon color="primary" />
+                  <Typography variant="subtitle1">
+                    {selectedColumns.size} of {headers.length} columns selected
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    size="small"
+                    onClick={() => toggleAllColumns(true)}
+                    disabled={processingState === 'processing'}
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => toggleAllColumns(false)}
+                    disabled={processingState === 'processing'}
+                  >
+                    Deselect All
+                  </Button>
+                </Box>
+              </Box>
+
+              <Card variant="outlined">
+                <CardContent sx={{ py: 1.5 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      overflowX: 'auto',
+                      gap: 0.5,
+                      py: 0.5,
+                      '&::-webkit-scrollbar': {
+                        height: 8,
+                      },
+                      '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'rgba(0,0,0,0.2)',
+                        borderRadius: 4,
+                      },
+                    }}
+                  >
+                    {headers.map((header, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          minWidth: 'fit-content',
+                          px: 1,
+                          py: 0.5,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          borderRadius: 1,
+                          backgroundColor: selectedColumns.has(index)
+                            ? 'primary.50'
+                            : 'background.paper',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            backgroundColor: selectedColumns.has(index)
+                              ? 'primary.100'
+                              : 'action.hover',
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          size="small"
+                          checked={selectedColumns.has(index)}
+                          onChange={() => toggleColumn(index)}
+                          disabled={processingState === 'processing'}
+                          sx={{ p: 0, mr: 0.5 }}
+                        />
+                        <Typography
+                          variant="caption"
+                          noWrap
+                          title={header}
+                          sx={{ fontWeight: 500, cursor: 'pointer' }}
+                          onClick={() => toggleColumn(index)}
+                        >
+                          {header || `Column ${index + 1}`}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Configuration - Step 4 */}
+      {headers.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Step 4: Output Configuration
+            </Typography>
+            <TextField
+              label="Output Sheet Name"
+              value={outputSheetName}
+              onChange={(e) => setOutputSheetName(e.target.value)}
+              placeholder="Merged Data"
+              helperText="Name for the sheet in the output file"
+              fullWidth
+              required
+              disabled={processingState === 'processing'}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Action Buttons */}
+      {files.length > 0 && headers.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={processFiles}
-                disabled={processingState === 'processing' || files.length === 0}
+                disabled={processingState === 'processing' || selectedColumns.size === 0}
                 startIcon={<TableChartIcon />}
               >
                 Merge Files
@@ -387,9 +627,9 @@ export const ExcelMergePage: FC = () => {
                 </Button>
               )}
             </Box>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Progress */}
       {processingState === 'processing' && (

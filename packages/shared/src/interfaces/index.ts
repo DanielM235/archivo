@@ -36,4 +36,9 @@ export type {
 } from './IDiData';
 
 // Excel merge interfaces
-export type { IExcelMergeFile, IExcelMergeResult, IExcelMergeConfig } from './IExcelMergeData';
+export type {
+  IExcelMergeFile,
+  IExcelMergeResult,
+  IExcelMergeConfig,
+  IHeaderExtractionResult,
+} from './IExcelMergeData';

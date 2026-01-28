@@ -2,6 +2,7 @@ import type {
   IExcelMergeFile,
   IExcelMergeResult,
   IExcelMergeConfig,
+  IHeaderExtractionResult,
 } from '../interfaces/IExcelMergeData';
 import * as XLSX from 'xlsx';
 
@@ -9,6 +10,96 @@ import * as XLSX from 'xlsx';
  * Service to merge multiple Excel files into a single file
  */
 export class ExcelMergerService {
+  /**
+   * Extract headers from the first file to allow column selection
+   */
+  async extractHeaders(
+    file: File,
+    config: Pick<IExcelMergeConfig, 'targetSheetName'>
+  ): Promise<IHeaderExtractionResult> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+      // Get the target sheet (case-insensitive)
+      let sheetName = config.targetSheetName;
+      if (sheetName) {
+        const foundSheet = workbook.SheetNames.find(
+          (name) => name.toLowerCase() === sheetName!.toLowerCase()
+        );
+        sheetName = foundSheet || workbook.SheetNames[0];
+      } else {
+        sheetName = workbook.SheetNames[0];
+      }
+
+      if (!sheetName) {
+        return {
+          success: false,
+          error: 'No sheets found in file',
+        };
+      }
+
+      const worksheet = workbook.Sheets[sheetName];
+      if (!worksheet) {
+        return {
+          success: false,
+          error: `Sheet "${sheetName}" not found`,
+        };
+      }
+
+      const sheetData = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
+        header: 1,
+        defval: '',
+        raw: false,
+      });
+
+      if (sheetData.length === 0) {
+        return {
+          success: false,
+          error: 'Sheet is empty',
+        };
+      }
+
+      // Extract header, handling margins
+      let headers: unknown[];
+      const hasTopMargin = sheetData[0]?.every(
+        (cell) => cell === '' || cell === null || cell === undefined
+      );
+
+      if (hasTopMargin && sheetData.length > 1) {
+        const secondRow = sheetData[1];
+        if (!secondRow) {
+          return {
+            success: false,
+            error: 'File has empty top margin but no data',
+          };
+        }
+        const hasLeftMargin =
+          secondRow[0] === '' || secondRow[0] === null || secondRow[0] === undefined;
+        headers = hasLeftMargin ? secondRow.slice(1) : secondRow;
+      } else if (sheetData[0]) {
+        const hasLeftMargin =
+          sheetData[0][0] === '' || sheetData[0][0] === null || sheetData[0][0] === undefined;
+        headers = hasLeftMargin ? sheetData[0].slice(1) : sheetData[0];
+      } else {
+        return {
+          success: false,
+          error: 'Could not extract headers',
+        };
+      }
+
+      return {
+        success: true,
+        headers: headers.map((h) => String(h)),
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error extracting headers',
+      };
+    }
+  }
+
   /**
    * Merge multiple Excel files into a single file
    */
@@ -215,22 +306,33 @@ export class ExcelMergerService {
       // Create merged workbook
       const mergedData: unknown[][] = [];
 
+      // Filter columns if selection is specified
+      const filterColumns = (row: unknown[]): unknown[] => {
+        if (!config.selectedColumnIndices || config.selectedColumnIndices.length === 0) {
+          return row;
+        }
+        return config.selectedColumnIndices.map((idx) => row[idx] ?? '');
+      };
+
+      const filteredHeaderRow = filterColumns(headerRow);
+      const filteredDataRows = allRows.map(filterColumns);
+
       // Add margins if configured
       if (config.includeMargins !== false) {
         // Empty row for top margin
         mergedData.push(['']);
 
         // Header row with left margin
-        mergedData.push(['', ...headerRow]);
+        mergedData.push(['', ...filteredHeaderRow]);
 
         // Data rows with left margin
-        for (const row of allRows) {
+        for (const row of filteredDataRows) {
           mergedData.push(['', ...row]);
         }
       } else {
         // No margins
-        mergedData.push(headerRow);
-        mergedData.push(...allRows);
+        mergedData.push(filteredHeaderRow);
+        mergedData.push(...filteredDataRows);
       }
 
       // Create workbook and sheet

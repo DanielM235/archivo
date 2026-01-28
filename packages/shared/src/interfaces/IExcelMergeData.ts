@@ -94,4 +94,30 @@ export interface IExcelMergeConfig {
    * Default: true
    */
   includeMargins?: boolean;
+
+  /**
+   * Indices of columns to include in the output (0-based)
+   * If not specified, all columns will be included
+   */
+  selectedColumnIndices?: number[];
+}
+
+/**
+ * Result of extracting headers from files
+ */
+export interface IHeaderExtractionResult {
+  /**
+   * Whether extraction was successful
+   */
+  success: boolean;
+
+  /**
+   * Extracted headers
+   */
+  headers?: string[];
+
+  /**
+   * Error message if extraction failed
+   */
+  error?: string;
 }
