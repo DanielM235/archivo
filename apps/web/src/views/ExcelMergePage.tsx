@@ -84,7 +84,6 @@ export const ExcelMergePage: FC = () => {
           setAvailableSheets(sheets);
           // Auto-select first sheet
           if (sheets.length > 0) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             setSelectedSheet(sheets[0]!);
           }
         } catch (err) {

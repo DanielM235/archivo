@@ -1,6 +1,6 @@
 {
   "name": "@archivo/web",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Archivo web application",
   "private": true,
   "type": "module",

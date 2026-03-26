@@ -10,6 +10,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DescriptionIcon from '@mui/icons-material/Description';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { VersionLabel } from '../components';
 
 /**
@@ -48,6 +49,13 @@ const features: IFeatureCard[] = [
     icon: <TableChartIcon sx={{ fontSize: 40 }} />,
     color: '#9c27b0',
     route: '/excel-merge',
+  },
+  {
+    title: 'Cash Flow Allocator',
+    description: 'Stochastically split financial values into fractions using normal distribution.',
+    icon: <AccountBalanceIcon sx={{ fontSize: 40 }} />,
+    color: '#f57c00',
+    route: '/cash-flow-allocator',
   },
   {
     title: 'Folder Processing',

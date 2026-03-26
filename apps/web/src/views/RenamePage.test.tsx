@@ -6,9 +6,6 @@ import { RenamePage } from './RenamePage';
 import { ThemeProvider } from '@archivo/ui';
 import { RenameService, ZipUtils, type IRenameFileInfo } from '@archivo/shared';
 
-// Mock __APP_VERSION__
-vi.stubGlobal('__APP_VERSION__', '0.1.0');
-
 // Mock react-router-dom
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -115,7 +112,7 @@ const renderWithProviders = (ui: React.ReactElement) => {
 /**
  * Mock file info helper
  */
-const createMockFileInfo = (name: string, newName?: string): IRenameFileInfo => ({
+const createMockFileInfo = (name: string, newName?: string | null): IRenameFileInfo => ({
   originalName: name,
   extension: name.split('.').pop() || '',
   size: 1024,
@@ -128,9 +125,11 @@ describe('RenamePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockMatchMedia(false);
+    vi.stubGlobal('__APP_VERSION__', '0.1.0');
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -429,7 +428,11 @@ describe('RenamePage', () => {
       const dropZone = screen.getByText(/drag and drop/i);
       const zipFile = new File(['content'], 'photos.zip', { type: 'application/zip' });
 
-      fireEvent.drop(dropZone.parentElement!, {
+      // Find the drop zone container (the Paper element)
+      const dropContainer =
+        dropZone.closest('[style*="dashed"]') || dropZone.parentElement?.parentElement;
+
+      fireEvent.drop(dropContainer!, {
         dataTransfer: {
           files: [zipFile],
           types: ['Files'],
@@ -474,7 +477,11 @@ describe('RenamePage', () => {
       const dropZone = screen.getByText(/drag and drop/i);
       const zipFile = new File(['content'], 'photos.zip', { type: 'application/zip' });
 
-      fireEvent.drop(dropZone.parentElement!, {
+      // Find the drop zone container (the Paper element)
+      const dropContainer =
+        dropZone.closest('[style*="dashed"]') || dropZone.parentElement?.parentElement;
+
+      fireEvent.drop(dropContainer!, {
         dataTransfer: {
           files: [zipFile],
           types: ['Files'],

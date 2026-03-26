@@ -18,6 +18,12 @@ export default mergeConfig(
       setupFiles: [path.resolve(__dirname, '../../vitest.setup.ts')],
       include: ['**/*.{test,spec}.{ts,tsx}'],
       passWithNoTests: true,
+      pool: 'threads',
+      poolOptions: {
+        threads: {
+          singleThread: true,
+        },
+      },
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html'],

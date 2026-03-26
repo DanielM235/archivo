@@ -17,3 +17,6 @@ export { ReconciliationExcelExporter } from './ReconciliationExcelExporter';
 
 // Excel merge service
 export { ExcelMergerService } from './ExcelMergerService';
+
+// Cash flow allocation service
+export { CashFlowExcelExporter } from './CashFlowExcelExporter';

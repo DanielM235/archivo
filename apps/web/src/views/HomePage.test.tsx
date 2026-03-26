@@ -5,9 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import { ThemeProvider } from '@archivo/ui';
 
-// Mock __APP_VERSION__
-vi.stubGlobal('__APP_VERSION__', '0.1.0');
-
 // Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -61,7 +58,11 @@ const renderWithProviders = (ui: React.ReactElement) => {
 describe('HomePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockMatchMedia(false);
+    vi.stubGlobal('__APP_VERSION__', '0.1.0');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('should render the main heading', () => {

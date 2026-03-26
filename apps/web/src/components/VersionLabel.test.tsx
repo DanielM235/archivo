@@ -1,11 +1,8 @@
 import '@testing-library/jest-dom/vitest';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { VersionLabel } from './VersionLabel';
 import { ThemeProvider } from '@archivo/ui';
-
-// Mock __APP_VERSION__
-vi.stubGlobal('__APP_VERSION__', '1.2.3');
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -40,7 +37,19 @@ const renderWithTheme = (ui: React.ReactElement) => {
 
 describe('VersionLabel', () => {
   beforeEach(() => {
+    vi.stubGlobal('__APP_VERSION__', '1.2.3');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+  beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('__APP_VERSION__', '1.2.3');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('should render version from __APP_VERSION__ by default', () => {

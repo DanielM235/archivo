@@ -5,6 +5,7 @@ import { NotFoundPage } from '@/views/NotFoundPage';
 import { RenamePage } from '@/views/RenamePage';
 import { ContractExtractPage } from '@/views/ContractExtractPage';
 import { ExcelMergePage } from '@/views/ExcelMergePage';
+import { CashFlowAllocatorPage } from '@/views/CashFlowAllocatorPage';
 
 /**
  * Application routes configuration
@@ -29,6 +30,10 @@ const routes: RouteObject[] = [
       {
         path: 'excel-merge',
         element: <ExcelMergePage />,
+      },
+      {
+        path: 'cash-flow-allocator',
+        element: <CashFlowAllocatorPage />,
       },
       {
         path: '*',
