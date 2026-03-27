@@ -11,6 +11,8 @@ export type {
   RenameProcessState,
 } from './IRenameConfig';
 
+export type { IPdfUnlockAdapter } from './IPdfUnlockAdapter';
+
 export { DEFAULT_RENAME_CONFIG, SEPARATOR_OPTIONS, NAME_ORDER_OPTIONS } from './IRenameConfig';
 
 // Contract extraction interfaces

@@ -6,6 +6,7 @@ import { RenamePage } from '@/views/RenamePage';
 import { ContractExtractPage } from '@/views/ContractExtractPage';
 import { ExcelMergePage } from '@/views/ExcelMergePage';
 import { CashFlowAllocatorPage } from '@/views/CashFlowAllocatorPage';
+import { PdfUnlockPage } from '@/views/PdfUnlockPage';
 
 /**
  * Application routes configuration
@@ -34,6 +35,10 @@ const routes: RouteObject[] = [
       {
         path: 'cash-flow-allocator',
         element: <CashFlowAllocatorPage />,
+      },
+      {
+        path: 'pdf-unlock',
+        element: <PdfUnlockPage />,
       },
       {
         path: '*',

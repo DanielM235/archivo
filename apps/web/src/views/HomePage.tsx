@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { getAssetPath } from '@archivo/shared';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import TableChartIcon from '@mui/icons-material/TableChart';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { VersionLabel } from '../components';
 
 /**
@@ -58,25 +56,12 @@ const features: IFeatureCard[] = [
     route: '/cash-flow-allocator',
   },
   {
-    title: 'Folder Processing',
-    description: 'Process entire folder structures with recursive operations.',
-    icon: <FolderZipIcon sx={{ fontSize: 40 }} />,
-    color: '#2e7d32',
-    comingSoon: true,
-  },
-  {
-    title: 'Duplicate Files',
-    description: 'Copy files to multiple destinations with custom naming.',
-    icon: <ContentCopyIcon sx={{ fontSize: 40 }} />,
-    color: '#ed6c02',
-    comingSoon: true,
-  },
-  {
-    title: 'Auto Rules',
-    description: 'Create automated rules for file organization that run on schedule.',
-    icon: <AutoFixHighIcon sx={{ fontSize: 40 }} />,
-    color: '#0288d1',
-    comingSoon: true,
+    title: 'PDF Unlock',
+    description:
+      'Remove password protection from PDF files using reference numbers or direct passwords.',
+    icon: <LockOpenIcon sx={{ fontSize: 40 }} />,
+    color: '#8bc34a',
+    route: '/pdf-unlock',
   },
   {
     title: 'Settings',

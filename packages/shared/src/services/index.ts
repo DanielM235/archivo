@@ -4,6 +4,9 @@
 
 export { RenameService } from './RenameService';
 
+// PDF unlock service
+export { PdfUnlockService } from './PdfUnlockService';
+
 // Contract extraction services
 export { ContractExtractorService } from './ContractExtractorService';
 export { ContractExtractorRegistry, contractExtractorRegistry } from './ContractExtractorRegistry';

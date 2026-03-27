@@ -4,3 +4,4 @@ export { RenamePage } from './RenamePage';
 export { ContractExtractPage } from './ContractExtractPage';
 export { ExcelMergePage } from './ExcelMergePage';
 export { CashFlowAllocatorPage } from './CashFlowAllocatorPage';
+export { PdfUnlockPage } from './PdfUnlockPage';

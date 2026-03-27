@@ -10,3 +10,4 @@ export { DateUtils, type DateFormatPattern } from './date.utils';
 export { FileUtils } from './file.utils';
 export { ZipUtils, type IZipAdapter, type IZipEntry } from './zip.utils';
 export { generateFractions } from './cashFlow.utils';
+export { PdfUnlockStorage, type IPdfUnlockConfig } from './pdfUnlockStorage.utils';

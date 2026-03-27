@@ -40,13 +40,35 @@ export const CashFlowAllocatorPage: FC = () => {
   const [totalValue, setTotalValue] = useState<string>('100000');
   const [numFractions, setNumFractions] = useState<string>('4');
   const [stdDevPercent, setStdDevPercent] = useState<string>('25');
+  const [decimalPlaces, setDecimalPlaces] = useState<string>('-2');
   const [fractions, setFractions] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [helpAnchorEl, setHelpAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   /**
-   * Handle help icon click
+   * Format a number based on decimal places setting
    */
+  const formatNumber = (num: number, decimals: number): string => {
+    if (decimals >= 0) {
+      return num.toFixed(decimals);
+    } else {
+      // For negative decimals, numbers are already rounded to powers of 10
+      return num.toString();
+    }
+  };
+
+  /**
+   * Format a percentage based on decimal places setting
+   */
+  const formatPercentage = (fraction: number, total: number, decimals: number): string => {
+    const percentage = (fraction / total) * 100;
+    if (decimals >= 0) {
+      return percentage.toFixed(decimals);
+    } else {
+      // For negative decimals, use 2 decimal places for percentages
+      return percentage.toFixed(2);
+    }
+  };
   const handleHelpClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setHelpAnchorEl(event.currentTarget);
   };
@@ -69,6 +91,7 @@ export const CashFlowAllocatorPage: FC = () => {
       const K = parseFloat(totalValue);
       const n = parseInt(numFractions, 10);
       const sdPercent = parseFloat(stdDevPercent);
+      const decimals = parseInt(decimalPlaces, 10);
 
       if (isNaN(K) || K <= 0) {
         throw new Error('Total value must be a positive number');
@@ -79,9 +102,35 @@ export const CashFlowAllocatorPage: FC = () => {
       if (isNaN(sdPercent) || sdPercent < 0) {
         throw new Error('Standard deviation must be a non-negative number');
       }
+      if (isNaN(decimals)) {
+        throw new Error('Decimal places must be an integer');
+      }
 
       const result = generateFractions(K, n, sdPercent);
-      setFractions(result);
+
+      // Round the results to the specified number of decimal places
+      let roundedResult: number[];
+      if (decimals >= 0) {
+        // Positive decimals: round to decimal places
+        roundedResult = result.map(
+          (fraction) => Math.round(fraction * Math.pow(10, decimals)) / Math.pow(10, decimals)
+        );
+      } else {
+        // Negative decimals: round to powers of 10
+        const power = Math.pow(10, -decimals);
+        const roundedFractions = result
+          .slice(0, -1)
+          .map((fraction) => Math.round(fraction / power) * power);
+
+        // Last value contains the difference to match total (not rounded)
+        const currentSum = roundedFractions.reduce((sum, f) => sum + f, 0);
+        const lastValue = K - currentSum;
+        roundedFractions.push(lastValue);
+
+        roundedResult = roundedFractions;
+      }
+
+      setFractions(roundedResult);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
@@ -105,7 +154,8 @@ export const CashFlowAllocatorPage: FC = () => {
       parseFloat(totalValue),
       parseInt(numFractions, 10),
       parseFloat(stdDevPercent),
-      fractions
+      fractions,
+      parseInt(decimalPlaces)
     );
     const fileName = exporter.generateFileName();
 
@@ -200,6 +250,15 @@ export const CashFlowAllocatorPage: FC = () => {
                 ),
               }}
             />
+            <TextField
+              label="Decimal Places"
+              type="number"
+              value={decimalPlaces}
+              onChange={(e) => setDecimalPlaces(e.target.value)}
+              fullWidth
+              inputProps={{ step: 1 }}
+              helperText="Decimal places (positive) or rounding power of 10 (negative). Last value adjusts to match total."
+            />
           </Stack>
           <Box sx={{ mt: 3 }}>
             <Button
@@ -265,16 +324,26 @@ export const CashFlowAllocatorPage: FC = () => {
                   {fractions.map((fraction, index) => (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell align="right">{fraction.toFixed(2)}</TableCell>
                       <TableCell align="right">
-                        {((fraction / parseFloat(totalValue)) * 100).toFixed(2)}%
+                        {formatNumber(fraction, parseInt(decimalPlaces))}
+                      </TableCell>
+                      <TableCell align="right">
+                        {formatPercentage(
+                          fraction,
+                          parseFloat(totalValue),
+                          parseInt(decimalPlaces)
+                        )}
+                        %
                       </TableCell>
                     </TableRow>
                   ))}
                   <TableRow>
                     <TableCell sx={{ fontWeight: 'bold' }}>Total</TableCell>
                     <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                      {fractions.reduce((sum, f) => sum + f, 0).toFixed(2)}
+                      {formatNumber(
+                        fractions.reduce((sum, f) => sum + f, 0),
+                        parseInt(decimalPlaces)
+                      )}
                     </TableCell>
                     <TableCell align="right" sx={{ fontWeight: 'bold' }}>
                       100.00%

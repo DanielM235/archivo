@@ -11,7 +11,8 @@ export class CashFlowExcelExporter {
     totalValue: number,
     numFractions: number,
     stdDevPercent: number,
-    fractions: number[]
+    fractions: number[],
+    decimalPlaces: number = 2
   ): Blob {
     // Create workbook
     const workbook = XLSX.utils.book_new();
@@ -21,7 +22,8 @@ export class CashFlowExcelExporter {
       totalValue,
       numFractions,
       stdDevPercent,
-      fractions
+      fractions,
+      decimalPlaces
     );
     XLSX.utils.book_append_sheet(workbook, resultsSheet, 'Cash Flow Allocation');
 
@@ -43,7 +45,8 @@ export class CashFlowExcelExporter {
     totalValue: number,
     numFractions: number,
     stdDevPercent: number,
-    fractions: number[]
+    fractions: number[],
+    decimalPlaces: number
   ): XLSX.WorkSheet {
     const data: (string | number)[][] = [];
 
@@ -65,11 +68,22 @@ export class CashFlowExcelExporter {
     // Results data
     fractions.forEach((fraction, index) => {
       const percentage = (fraction / totalValue) * 100;
-      data.push([index + 1, fraction, percentage]);
+      data.push([
+        index + 1,
+        decimalPlaces >= 0 ? Number(fraction.toFixed(decimalPlaces)) : fraction,
+        decimalPlaces >= 0
+          ? Number(percentage.toFixed(decimalPlaces))
+          : Number(percentage.toFixed(2)),
+      ]);
     });
 
     // Total row
-    data.push(['Total', fractions.reduce((sum, f) => sum + f, 0), 100]);
+    const total = fractions.reduce((sum, f) => sum + f, 0);
+    data.push([
+      'Total',
+      decimalPlaces >= 0 ? Number(total.toFixed(decimalPlaces)) : total,
+      decimalPlaces >= 0 ? Number((100.0).toFixed(decimalPlaces)) : 100.0,
+    ]);
 
     // Create worksheet
     const worksheet = XLSX.utils.aoa_to_sheet(data);

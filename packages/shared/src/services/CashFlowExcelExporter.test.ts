@@ -8,8 +8,9 @@ describe('CashFlowExcelExporter', () => {
     const numFractions = 5;
     const stdDevPercent = 25;
     const fractions = [180, 220, 190, 210, 200];
+    const decimalPlaces = 2;
 
-    const blob = exporter.export(totalValue, numFractions, stdDevPercent, fractions);
+    const blob = exporter.export(totalValue, numFractions, stdDevPercent, fractions, decimalPlaces);
 
     expect(blob).toBeInstanceOf(Blob);
     expect(blob.type).toBe('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

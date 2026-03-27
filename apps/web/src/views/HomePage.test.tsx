@@ -92,10 +92,10 @@ describe('HomePage', () => {
     renderWithProviders(<HomePage />);
 
     expect(screen.getByText('Bulk Rename')).toBeInTheDocument();
-    expect(screen.getByText('Move Files')).toBeInTheDocument();
-    expect(screen.getByText('Folder Processing')).toBeInTheDocument();
-    expect(screen.getByText('Duplicate Files')).toBeInTheDocument();
-    expect(screen.getByText('Auto Rules')).toBeInTheDocument();
+    expect(screen.getByText('Contract Extract')).toBeInTheDocument();
+    expect(screen.getByText('Excel Merge')).toBeInTheDocument();
+    expect(screen.getByText('Cash Flow Allocator')).toBeInTheDocument();
+    expect(screen.getByText('PDF Unlock')).toBeInTheDocument();
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 
@@ -111,8 +111,8 @@ describe('HomePage', () => {
     renderWithProviders(<HomePage />);
 
     const comingSoonBadges = screen.getAllByText('Coming Soon');
-    // 5 features have comingSoon: true (Move Files, Folder Processing, Duplicate Files, Auto Rules, Settings)
-    expect(comingSoonBadges.length).toBe(5);
+    // 1 feature has comingSoon: true (Settings)
+    expect(comingSoonBadges.length).toBe(1);
   });
 
   it('should render the version label', () => {
@@ -147,9 +147,9 @@ describe('HomePage', () => {
   it('should not navigate when clicking Coming Soon cards', () => {
     renderWithProviders(<HomePage />);
 
-    const moveFilesCard = screen.getByText('Move Files').closest('[class*="MuiCard"]');
-    expect(moveFilesCard).not.toBeNull();
-    fireEvent.click(moveFilesCard!);
+    const settingsCard = screen.getByText('Settings').closest('[class*="MuiCard"]');
+    expect(settingsCard).not.toBeNull();
+    fireEvent.click(settingsCard!);
 
     // Should not navigate because it's a "Coming Soon" feature
     expect(mockNavigate).not.toHaveBeenCalled();
